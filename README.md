@@ -31,7 +31,7 @@ Runs an individual example:
 ```
 EXAMPLE=1 node lab/promise/simple-example-using-setTimeout.js
 ```
-### 01. Using Promise and handle exception
+### 02. Using Promise and handle exception
 
 Runs lab #01 examples (all of examples):
 
