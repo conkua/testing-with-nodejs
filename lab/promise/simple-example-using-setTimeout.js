@@ -112,3 +112,11 @@ var usingPromise2 = function() {
 }
 
 choose('3') && usingPromise2();
+
+/*
+ - using promised function - step#1
+ - using promised function - step#2
+ - using promised function - step#3
+ - using promised function - step#4
+ - using promised function - step#5
+*/
