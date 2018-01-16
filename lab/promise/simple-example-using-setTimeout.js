@@ -1,3 +1,6 @@
+'use strict';
+
+var Promise = require('bluebird');
 
 // -- utilities --
 var choose = function(num) {
@@ -112,6 +115,51 @@ var usingPromise_2 = function() {
 }
 
 choose('2') && usingPromise_2();
+
+/*
+ - using promised function - step#1
+ - using promised function - step#2
+ - using promised function - step#3
+ - using promised function - step#4
+ - using promised function - step#5
+*/
+
+var usingPromise_3 = function() {
+  var _step1 = function() {
+    console.log(' - using promised function - step#1');
+    return Promise.resolve();
+  }
+  var _step2 = function() {
+    return new Promise(function(onResolved) {
+      setTimeout(function() {
+        console.log(' - using promised function - step#2');
+        onResolved();
+      }, 2000);
+    })
+  }
+  var _step3 = function() {
+    console.log(' - using promised function - step#3');
+    return Promise.resolve();
+  }
+  var _step4 = function() {
+    return new Promise(function(onResolved) {
+      setTimeout(function() {
+        console.log(' - using promised function - step#4');
+        onResolved();
+      }, 1000);
+    })
+  }
+  var _step5 = function() {
+    console.log(' - using promised function - step#5');
+    return Promise.resolve();
+  }
+
+  return Promise.mapSeries([_step1, _step2, _step3, _step4, _step5], function(f) {
+    return f();
+  })
+}
+
+choose('3') && usingPromise_3();
 
 /*
  - using promised function - step#1

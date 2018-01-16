@@ -1,0 +1,22 @@
+{
+  "name": "testing-with-nodejs",
+  "version": "0.1.0",
+  "description": "Testing with Node.js online course",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/conkua/testing-with-nodejs.git"
+  },
+  "author": "pnhung177",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/conkua/testing-with-nodejs/issues"
+  },
+  "homepage": "https://github.com/conkua/testing-with-nodejs#readme",
+  "dependencies": {
+    "bluebird": "^3.5.1"
+  }
+}
