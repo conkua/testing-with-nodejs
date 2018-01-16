@@ -22,7 +22,7 @@ var withoutPromise = function() {
   console.log(' - without promise - step#5');
 }
 
-choose('1') && withoutPromise();
+choose('0') && withoutPromise();
 
 /*
 output will be:
@@ -33,7 +33,7 @@ output will be:
  - without promise - step#2
 */
 
-var usingPromise = function() {
+var usingPromise_1 = function() {
   console.log(' - using promise - step#1');
 
   Promise.resolve()
@@ -63,7 +63,7 @@ var usingPromise = function() {
     })
 }
 
-choose('2') && usingPromise();
+choose('1') && usingPromise_1();
 
 /*
  - using promise - step#1
@@ -73,7 +73,7 @@ choose('2') && usingPromise();
  - using promise - step#5
 */
 
-var usingPromise2 = function() {
+var usingPromise_2 = function() {
   var _step1 = function() {
     console.log(' - using promised function - step#1');
     return Promise.resolve();
@@ -111,7 +111,7 @@ var usingPromise2 = function() {
     .then(_step5)
 }
 
-choose('3') && usingPromise2();
+choose('2') && usingPromise_2();
 
 /*
  - using promised function - step#1
