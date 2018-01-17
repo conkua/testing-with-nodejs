@@ -23,24 +23,40 @@
 Runs lab #01 examples (all of examples):
 
 ```
-EXAMPLE=0,1,2,3 node lab/promise/simple-example-using-setTimeout.js
+EXAMPLE=0,1,2,3 node lab/simple-promise-example/simple-example-using-setTimeout.js
 ```
 
 Runs an individual example:
 
 ```
-EXAMPLE=1 node lab/promise/simple-example-using-setTimeout.js
+EXAMPLE=1 node lab/simple-promise-example/simple-example-using-setTimeout.js
 ```
-### 02. Using Promise and handle exception
+
+#### a. Handle exceptions using Promise
 
 Runs lab #01 examples (all of examples):
 
 ```
-EXAMPLE=0,1,2,3 node lab/promise/simple-example-using-setTimeout-with-handle-error.js
+EXAMPLE=0,1,2,3 node lab/simple-promise-example/simple-example-using-setTimeout-with-handle-error.js
 ```
 
 Runs an individual example:
 
 ```
-EXAMPLE=1 node lab/promise/simple-example-using-setTimeout-with-handle-error.js
+EXAMPLE=1 node lab/simple-promise-example/simple-example-using-setTimeout-with-handle-error.js
 ```
+
+### 02. Start/stop servers for testing
+
+The example `promise-start-stop-servers` is used to demonstrate how to start/stop servers for testing. The testcase script should start server programmatically and waiting for starting completed before run the testing code.
+
+To run this example, use the following command line:
+
+```shell
+cd lab/promise-start-stop-servers
+
+npm install
+
+DEBUG=tdd* node_modules/.bin/mocha test/tdd/web-server-test.js
+```
+
