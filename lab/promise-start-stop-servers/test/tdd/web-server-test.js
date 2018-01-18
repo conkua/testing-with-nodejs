@@ -13,6 +13,12 @@ describe('testing-with-nodejs:promise-start-stop-servers:web-server-test', funct
   this.timeout(60000);
 
   describe('single web service', function() {
+    before(function(done) {
+      TS.processRunner.deleteAll()
+        .then(lodash.ary(done, 0))
+        .catch(done);
+    });
+
     beforeEach(function(done) {
       TS.processRunner
         .start({
@@ -68,6 +74,35 @@ describe('testing-with-nodejs:promise-start-stop-servers:web-server-test', funct
         .then(function(body) {
           debugx.enabled && debugx('Response body: [%s]', body);
           assert.equal(body, 'Hello World, server running on port: 9001');
+          done();
+        })
+        .catch(done);
+    });
+
+    it('make a HTTP request with Accept type is "application/json"', function(done) {
+      var promize;
+      if (process.env.CHECK_SERVICE_READY) {
+        promize = DT.isServiceReady({
+          url: 'http://localhost:9001/',
+          retryMax: 10,
+          statusCode: 200
+        });
+      } else {
+        promize = Promise.resolve().delay(1000);
+      }
+      promize
+        .then(fetch.bind(fetch, 'http://localhost:9001/sayhello', {
+          headers: { 'Accept': 'application/json' }
+        }))
+        .then(function(res) {
+          return res.json();
+        })
+        .then(function(body) {
+          debugx.enabled && debugx('Response body: [%s]', JSON.stringify(body));
+          assert.deepEqual(body, {
+            message: 'Hello World',
+            port: '9001'
+          });
           done();
         })
         .catch(done);

@@ -12,7 +12,14 @@ app.get('/', function(req, res) {
 });
 
 app.get('/sayhello', function(req, res) {
-  res.send('Hello World, server running on port: ' + appPort);
+  if (req.headers.accept === 'application/json') {
+    res.json({
+      message: 'Hello World',
+      port: appPort
+    });
+  } else {
+    res.send('Hello World, server running on port: ' + appPort);
+  }
 });
 
 app.listen(appPort, function () {
