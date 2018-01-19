@@ -1,0 +1,25 @@
+{
+  "name": "log-message-collection",
+  "version": "0.1.0",
+  "description": "Log message collection example",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test/tdd/*-test.js"
+  },
+  "author": "pnhung177",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "winston": "^2.4.0"
+  },
+  "devDependencies": {
+    "bluebird": "^3.5.1",
+    "chai": "^4.1.2",
+    "debug": "^3.1.0",
+    "devebot-test": "^0.2.1",
+    "lodash": "^4.17.4",
+    "mocha": "^4.1.0",
+    "node-fetch": "^1.7.3"
+  }
+}
