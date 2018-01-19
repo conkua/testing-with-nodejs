@@ -11,7 +11,15 @@ var TS = require('devebot-test').toolset;
 var debugx = require('debug')('tdd:testing-with-nodejs:log-message-collection');
 
 describe('testing-with-nodejs:log-message-collection:web-server-test', function() {
-  this.timeout(60000);
+  this.timeout(DT.DEFAULT_TIMEOUT);
+
+  before(function() {
+    TS.envCustomizer.setup({
+      LOGOLITE_ALWAYS_ENABLED: 'all',
+      LOGOLITE_DEBUGLOG: 'true',
+      NODE_ENV: 'test'
+    });
+  });
 
   var services = {
     "server1": "9001",
@@ -64,6 +72,25 @@ describe('testing-with-nodejs:log-message-collection:web-server-test', function(
         });
     });
 
+    it('make a HTTP request with Accept type is "application/json"', function(done) {
+      Promise.resolve()
+        .then(fetch.bind(fetch, 'http://localhost:9001/sayhello', {
+          headers: { 'Accept': 'application/json' }
+        }))
+        .then(function(res) {
+          return res.json();
+        })
+        .then(function(body) {
+          debugx.enabled && debugx('Response body: [%s]', JSON.stringify(body));
+          assert.deepEqual(body, {
+            message: 'Hello World',
+            port: '9001'
+          });
+          done();
+        })
+        .catch(done);
+    });
+
     afterEach(function(done) {
       TS.processRunner.stop(lodash.keys(services))
         .then(lodash.ary(done, 0))
@@ -76,4 +103,8 @@ describe('testing-with-nodejs:log-message-collection:web-server-test', function(
         .catch(done);
     });
   });
+
+  after(function() {
+    TS.envCustomizer.reset();
+  })
 });
