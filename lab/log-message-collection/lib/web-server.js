@@ -16,7 +16,7 @@ app.get('/', function(req, res) {
 
 app.get('/sayhello', function(req, res) {
   var reqTrace = LogTracer.ROOT.branch({
-    key: 'requestId', value: LogTracer.getLogID()
+    key: 'requestId', value: req.get('X-Request-Id') || 'not-found'
   });
 
   log.info && log.info(reqTrace.add({

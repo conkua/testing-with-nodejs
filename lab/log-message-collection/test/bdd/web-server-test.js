@@ -6,9 +6,10 @@ var lodash = require('lodash');
 var path = require('path');
 var util = require('util');
 var fetch = require('node-fetch');
+var LogTracer = require('logolite').LogTracer;
 var DT = require('devebot-test');
 var TS = require('devebot-test').toolset;
-var debugx = require('debug')('tdd:testing-with-nodejs:log-message-collection');
+var debugx = require('debug')('bdd:testing-with-nodejs:log-message-collection');
 
 describe('testing-with-nodejs:log-message-collection:web-server-test', function() {
   this.timeout(DT.DEFAULT_TIMEOUT);
@@ -16,7 +17,8 @@ describe('testing-with-nodejs:log-message-collection:web-server-test', function(
   before(function() {
     TS.envCustomizer.setup({
       LOGOLITE_ALWAYS_ENABLED: 'all',
-      LOGOLITE_DEBUGLOG: 'true',
+      LOGOLITE_TEXTFORMAT_ENABLED: 'false',
+      LOGOLITE_TAGS_EMBEDDABLE: 'true',
       NODE_ENV: 'test'
     });
   });
@@ -28,18 +30,34 @@ describe('testing-with-nodejs:log-message-collection:web-server-test', function(
 
   describe('multiple web services', function() {
     beforeEach(function(done) {
-      TS.processRunner
-        .start({
-          apps: lodash.map(services, function(serverPort, serverName) {
-            return {
-              name: serverName,
-              script: path.join(__dirname, '../../lib/web-server.js'),
-              env: {
-                'PORT': serverPort,
+      Promise.all([
+          TS.loggingTracer
+            .start({
+              filters: [
+                {
+                  filter: function() { return true },
+                  countTo: 'total',
+                  storeTo: 'store'
+                }
+              ],
+              stopWhen: function(packet, stats) {
+                if (stats.total >= 2) return true;
+                return false;
               }
-            }
-          })
-        })
+            }),
+          TS.processRunner
+            .start({
+              apps: lodash.map(services, function(serverPort, serverName) {
+                return {
+                  name: serverName,
+                  script: path.join(__dirname, '../../lib/web-server.js'),
+                  env: {
+                    'PORT': serverPort,
+                  }
+                }
+              })
+            })
+        ])
         .then(function() {
           return Promise.all(lodash.map(services, function(serverPort, serverName) {
             return DT.isServiceReady({
@@ -49,9 +67,7 @@ describe('testing-with-nodejs:log-message-collection:web-server-test', function(
             })
           }));
         })
-        .then(function() {
-          done();
-        })
+        .then(lodash.ary(done, 0))
         .catch(done);
     });
 
@@ -73,9 +89,14 @@ describe('testing-with-nodejs:log-message-collection:web-server-test', function(
     });
 
     it('make a HTTP request with Accept type is "application/json"', function(done) {
+      var requestId = LogTracer.getLogID();
+      debugx.enabled && debugx('RequestID: %s', requestId);
       Promise.resolve()
         .then(fetch.bind(fetch, 'http://localhost:9001/sayhello', {
-          headers: { 'Accept': 'application/json' }
+          headers: {
+            'Accept': 'application/json',
+            'X-Request-Id': requestId
+          }
         }))
         .then(function(res) {
           return res.json();
@@ -86,13 +107,25 @@ describe('testing-with-nodejs:log-message-collection:web-server-test', function(
             message: 'Hello World',
             port: '9001'
           });
-          done();
         })
         .catch(done);
+
+      TS.loggingTracer.process().then(function(stats) {
+        debugx.enabled && debugx('==@ Status: %s', JSON.stringify(stats, null, 2));
+        assert.equal(stats.total, 2);
+        assert.sameDeepMembers(
+          lodash.map(stats.store, function(item) { return item.requestId }),
+          lodash.times(2, lodash.constant(requestId))
+        );
+        done();
+      }).catch(done);
     });
 
     afterEach(function(done) {
-      TS.processRunner.stop(lodash.keys(services))
+      Promise.all([
+          TS.loggingTracer.stop(),
+          TS.processRunner.stop(lodash.keys(services))
+        ])
         .then(lodash.ary(done, 0))
         .catch(done);
     });
