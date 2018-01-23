@@ -60,3 +60,14 @@ npm install
 DEBUG=tdd* node_modules/.bin/mocha test/tdd/web-server-test.js
 ```
 
+### 03. Log message collection
+
+Launches this example as the following:
+
+```shell
+cd lab/log-message-collection
+
+npm install
+
+DEBUG=tdd*,bdd* node_modules/.bin/mocha test/bdd/web-server-test.js
+```

@@ -15,8 +15,5 @@
   "bugs": {
     "url": "https://github.com/conkua/testing-with-nodejs/issues"
   },
-  "homepage": "https://github.com/conkua/testing-with-nodejs#readme",
-  "dependencies": {
-    "bluebird": "^3.5.1"
-  }
+  "homepage": "https://github.com/conkua/testing-with-nodejs#readme"
 }
