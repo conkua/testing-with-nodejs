@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 
 // -- utilities --
 var choose = function (num) {
-  var ex = (process.env.EXAMPLE || '1e').split(',');
+  var ex = (process.env.EXAMPLE || '1').split(',');
   return ex.indexOf(num) >= 0;
 }
 // ---------------
