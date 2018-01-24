@@ -67,8 +67,7 @@ describe('testing-with-nodejs:log-message-collection:web-server-test', function(
             })
           }));
         })
-        .then(lodash.ary(done, 0))
-        .catch(done);
+        .asCallback(done);
     });
 
     it('should start/stop processes properly', function(done) {
@@ -81,11 +80,9 @@ describe('testing-with-nodejs:log-message-collection:web-server-test', function(
           }), lodash.map(services, function(serverPort, serverName) {
             return { name: serverName, status: 'online' };
           }));
-          done();
+          return true;
         })
-        .catch(function(error) {
-          done(error);
-        });
+        .asCallback(done);
     });
 
     it('make a HTTP request with Accept type is "application/json"', function(done) {
@@ -122,18 +119,16 @@ describe('testing-with-nodejs:log-message-collection:web-server-test', function(
     });
 
     afterEach(function(done) {
-      Promise.all([
+      Promise
+        .all([
           TS.loggingTracer.stop(),
           TS.processRunner.stop(lodash.keys(services))
         ])
-        .then(lodash.ary(done, 0))
-        .catch(done);
+        .asCallback(done);
     });
 
     after(function(done) {
-      TS.processRunner.deleteAll()
-        .then(lodash.ary(done, 0))
-        .catch(done);
+      TS.processRunner.deleteAll(lodash.keys(services)).asCallback(done);
     });
   });
 
